@@ -1,4 +1,4 @@
-// client/src/pages/admin/UserRegistration.jsx - UPDATED EDIT FUNCTIONALITY
+// src/pages/admin/UserRegistration.jsx
 import { useState, useEffect } from "react";
 import {
   UserPlus,
@@ -13,8 +13,9 @@ import {
   Save,
   X,
   Key,
+  ChefHat,
 } from "lucide-react";
-import { API_BASE_URL } from "../../config/api"; 
+import { API_BASE_URL } from "../../config/api";
 
 export function UserRegistration() {
   const [users, setUsers] = useState([]);
@@ -72,7 +73,7 @@ export function UserRegistration() {
         throw new Error("No authentication token");
       }
 
-      console.log("Fetching users from backend...");
+      console.log("Fetching kitchen staff from backend...");
       const response = await fetch(`${API_BASE}/auth/users`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -83,8 +84,8 @@ export function UserRegistration() {
         const usersData = await response.json();
         setUsers(usersData);
         setUsingLocalData(false);
-        setMessage({ type: "success", text: "Connected to database" });
-        console.log("✅ Loaded users from MongoDB");
+        setMessage({ type: "success", text: "Connected to kitchen database" });
+        console.log("✅ Loaded kitchen staff from MongoDB");
       } else {
         throw new Error("Failed to fetch users from backend");
       }
@@ -102,15 +103,15 @@ export function UserRegistration() {
   };
 
   const loadLocalUsers = () => {
-    const savedUsers = localStorage.getItem("serenity-users");
+    const savedUsers = localStorage.getItem("kijiji-users");
     if (savedUsers) {
       setUsers(JSON.parse(savedUsers));
     } else {
       setUsers([
         {
           _id: "1",
-          name: "System Administrator",
-          email: "admin@serenityplace.org",
+          name: "Kitchen Administrator",
+          email: "admin@kijijicuisine.com",
           role: "admin",
           createdAt: new Date("2024-01-01"),
         },
@@ -186,7 +187,7 @@ export function UserRegistration() {
           await fetchUsers();
           setMessage({
             type: "success",
-            text: `User ${formData.name} updated successfully!`,
+            text: `Kitchen staff ${formData.name} updated successfully!`,
           });
           resetForm();
         } else {
@@ -214,7 +215,7 @@ export function UserRegistration() {
           await fetchUsers();
           setMessage({
             type: "success",
-            text: `User ${formData.name} registered successfully!`,
+            text: `Kitchen staff ${formData.name} registered successfully!`,
           });
           resetForm();
         } else {
@@ -246,10 +247,10 @@ export function UserRegistration() {
           : user
       );
       setUsers(updatedUsers);
-      localStorage.setItem("serenity-users", JSON.stringify(updatedUsers));
+      localStorage.setItem("kijiji-users", JSON.stringify(updatedUsers));
       setMessage({
         type: "success",
-        text: `User ${formData.name} updated successfully locally!`,
+        text: `Kitchen staff ${formData.name} updated successfully locally!`,
       });
     } else {
       // Create new local user
@@ -273,10 +274,10 @@ export function UserRegistration() {
 
       const updatedUsers = [newUser, ...users];
       setUsers(updatedUsers);
-      localStorage.setItem("serenity-users", JSON.stringify(updatedUsers));
+      localStorage.setItem("kijiji-users", JSON.stringify(updatedUsers));
       setMessage({
         type: "success",
-        text: `User ${formData.name} registered successfully locally!`,
+        text: `Kitchen staff ${formData.name} registered successfully locally!`,
       });
     }
     resetForm();
@@ -297,17 +298,18 @@ export function UserRegistration() {
   };
 
   const handleDelete = async (userId) => {
-    if (!window.confirm("Are you sure you want to delete this user?")) return;
+    if (!window.confirm("Are you sure you want to delete this kitchen staff?"))
+      return;
 
     try {
       const token = localStorage.getItem("token");
       const userToDelete = users.find((user) => user._id === userId);
 
       // Don't allow deleting the main admin or yourself
-      if (userToDelete?.email === "admin@serenityplace.org") {
+      if (userToDelete?.email === "admin@kijijicuisine.com") {
         setMessage({
           type: "error",
-          text: "Cannot delete the main administrator",
+          text: "Cannot delete the main kitchen administrator",
         });
         return;
       }
@@ -324,7 +326,7 @@ export function UserRegistration() {
       ) {
         setMessage({
           type: "error",
-          text: "Staff members can only delete their own account",
+          text: "Kitchen staff can only delete their own account",
         });
         return;
       }
@@ -336,7 +338,10 @@ export function UserRegistration() {
 
       if (response.ok) {
         await fetchUsers();
-        setMessage({ type: "success", text: "User deleted successfully!" });
+        setMessage({
+          type: "success",
+          text: "Kitchen staff deleted successfully!",
+        });
       } else {
         const data = await response.json();
         throw new Error(data.message || "Delete failed");
@@ -345,10 +350,10 @@ export function UserRegistration() {
       console.log("Deleting from local storage:", error.message);
 
       const userToDelete = users.find((user) => user._id === userId);
-      if (userToDelete?.email === "admin@serenityplace.org") {
+      if (userToDelete?.email === "admin@kijijicuisine.com") {
         setMessage({
           type: "error",
-          text: "Cannot delete the main administrator",
+          text: "Cannot delete the main kitchen administrator",
         });
         return;
       }
@@ -364,17 +369,17 @@ export function UserRegistration() {
       ) {
         setMessage({
           type: "error",
-          text: "Staff members can only delete their own account",
+          text: "Kitchen staff can only delete their own account",
         });
         return;
       }
 
       const updatedUsers = users.filter((user) => user._id !== userId);
       setUsers(updatedUsers);
-      localStorage.setItem("serenity-users", JSON.stringify(updatedUsers));
+      localStorage.setItem("kijiji-users", JSON.stringify(updatedUsers));
       setMessage({
         type: "success",
-        text: "User deleted successfully locally!",
+        text: "Kitchen staff deleted successfully locally!",
       });
       setUsingLocalData(true);
     }
@@ -395,8 +400,8 @@ export function UserRegistration() {
 
   const getRoleBadge = (role) => {
     const styles = {
-      admin: "bg-purple-100 text-purple-800",
-      staff: "bg-blue-100 text-blue-800",
+      admin: "bg-red-100 text-red-800",
+      staff: "bg-amber-100 text-amber-800",
     };
     return (
       <span
@@ -418,9 +423,9 @@ export function UserRegistration() {
   if (loading && users.length === 0) {
     return (
       <div className="p-6">
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center text-red-600">
           <RefreshCw className="w-6 h-6 animate-spin mr-2" />
-          Loading users...
+          Loading kitchen staff...
         </div>
       </div>
     );
@@ -431,9 +436,13 @@ export function UserRegistration() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
+          <h1 className="text-2xl font-bold text-gray-900">
+            Kitchen Staff Management
+          </h1>
           <p className="text-gray-600">
-            {usingLocalData ? "Using local storage" : "Connected to database"}
+            {usingLocalData
+              ? "Using local storage"
+              : "Connected to kitchen database"}
             {currentUser &&
               ` • Logged in as ${currentUser.name} (${currentUser.role})`}
           </p>
@@ -441,16 +450,16 @@ export function UserRegistration() {
         <div className="flex gap-2">
           <button
             onClick={fetchUsers}
-            className="flex items-center bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+            className="flex items-center bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-xl transition-colors"
           >
             <RefreshCw className="w-4 h-4 mr-2" /> Refresh
           </button>
           {currentUser?.role === "admin" && (
             <button
               onClick={() => setShowForm(true)}
-              className="flex items-center bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+              className="flex items-center bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white font-semibold py-2 px-4 rounded-xl transition-all"
             >
-              <UserPlus className="w-4 h-4 mr-2" /> Add User
+              <UserPlus className="w-4 h-4 mr-2" /> Add Staff
             </button>
           )}
         </div>
@@ -460,7 +469,7 @@ export function UserRegistration() {
       <div
         className={`p-4 rounded-xl flex items-center gap-3 ${
           usingLocalData
-            ? "bg-yellow-50 border border-yellow-200 text-yellow-800"
+            ? "bg-amber-50 border border-amber-200 text-amber-800"
             : "bg-green-50 border border-green-200 text-green-800"
         }`}
       >
@@ -470,11 +479,11 @@ export function UserRegistration() {
           <Database className="w-5 h-5" />
         )}
         <div>
-          <strong>{usingLocalData ? "Local Mode" : "Database Mode"}</strong>
+          <strong>{usingLocalData ? "Local Mode" : "Kitchen Database"}</strong>
           <div className="text-sm">
             {usingLocalData
-              ? "Users stored in your browser"
-              : "Users stored in MongoDB Atlas"}
+              ? "Staff data stored in your browser"
+              : "Staff data stored in MongoDB Atlas"}
           </div>
         </div>
       </div>
@@ -494,16 +503,16 @@ export function UserRegistration() {
         </div>
       )}
 
-      {/* User List */}
+      {/* Kitchen Staff List */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {users.map((user) => (
           <div
             key={user._id}
-            className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6"
+            className="bg-white rounded-2xl shadow-sm border border-red-100 p-6"
           >
             <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-teal-500 rounded-xl flex items-center justify-center">
-                <User className="w-6 h-6 text-white" />
+              <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-amber-500 rounded-xl flex items-center justify-center">
+                <ChefHat className="w-6 h-6 text-white" />
               </div>
               {getRoleBadge(user.role)}
             </div>
@@ -529,18 +538,18 @@ export function UserRegistration() {
               {canModifyUser(user) && (
                 <button
                   onClick={() => handleEdit(user)}
-                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-3 rounded-lg transition-colors text-sm"
+                  className="flex-1 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white font-medium py-2 px-3 rounded-xl transition-all text-sm"
                 >
                   <Edit className="w-4 h-4 mr-1 inline" /> Edit
                 </button>
               )}
               {canModifyUser(user) &&
-                user.email !== "admin@serenityplace.org" && (
+                user.email !== "admin@kijijicuisine.com" && (
                   <button
                     onClick={() => handleDelete(user._id)}
-                    className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-3 rounded-lg transition-colors text-sm"
+                    className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-3 rounded-xl transition-colors text-sm"
                   >
-                    <Trash2 className="w-4 h-4 mr-1 inline" /> Delete
+                    <Trash2 className="w-4 h-4 mr-1 inline" /> Remove
                   </button>
                 )}
             </div>
@@ -548,30 +557,30 @@ export function UserRegistration() {
         ))}
       </div>
 
-      {/* Add/Edit User Form Modal */}
+      {/* Add/Edit Staff Form Modal */}
       {showForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                   {editingUser ? (
-                    <Edit className="w-8 h-8 text-green-600" />
+                    <Edit className="w-8 h-8 text-red-600" />
                   ) : (
-                    <UserPlus className="w-8 h-8 text-green-600" />
+                    <UserPlus className="w-8 h-8 text-red-600" />
                   )}
                 </div>
                 <h2 className="text-xl font-bold text-gray-900">
-                  {editingUser ? "Edit User" : "Register New User"}
+                  {editingUser ? "Edit Kitchen Staff" : "Add New Kitchen Staff"}
                 </h2>
                 <p className="text-gray-600 mt-1">
                   {usingLocalData
-                    ? `User will be ${
-                        editingUser ? "updated" : "created"
+                    ? `Staff will be ${
+                        editingUser ? "updated" : "added"
                       } locally`
-                    : `User will be ${
-                        editingUser ? "updated" : "created"
-                      } in database`}
+                    : `Staff will be ${
+                        editingUser ? "updated" : "added"
+                      } to kitchen database`}
                 </p>
               </div>
 
@@ -588,8 +597,8 @@ export function UserRegistration() {
                     onChange={(e) =>
                       setFormData({ ...formData, name: e.target.value })
                     }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Enter full name"
+                    className="w-full px-3 py-2 border border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                    placeholder="Enter staff full name"
                   />
                 </div>
 
@@ -605,14 +614,14 @@ export function UserRegistration() {
                     onChange={(e) =>
                       setFormData({ ...formData, email: e.target.value })
                     }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="user@serenityplace.org"
+                    className="w-full px-3 py-2 border border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                    placeholder="staff@kijijicuisine.com"
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Role *
+                    Kitchen Role *
                   </label>
                   <select
                     name="role"
@@ -620,15 +629,15 @@ export function UserRegistration() {
                     onChange={(e) =>
                       setFormData({ ...formData, role: e.target.value })
                     }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500"
                     disabled={currentUser?.role !== "admin"}
                   >
-                    <option value="staff">Staff Member</option>
-                    <option value="admin">Administrator</option>
+                    <option value="staff">Kitchen Staff</option>
+                    <option value="admin">Kitchen Administrator</option>
                   </select>
                   {currentUser?.role !== "admin" && (
                     <p className="text-xs text-gray-500 mt-1">
-                      Only administrators can change user roles
+                      Only kitchen administrators can change staff roles
                     </p>
                   )}
                 </div>
@@ -639,7 +648,7 @@ export function UserRegistration() {
                     <button
                       type="button"
                       onClick={() => setShowPasswordFields(!showPasswordFields)}
-                      className="flex items-center text-blue-600 hover:text-blue-700 text-sm font-medium"
+                      className="flex items-center text-red-600 hover:text-red-700 text-sm font-medium"
                     >
                       <Key className="w-4 h-4 mr-2" />
                       {showPasswordFields
@@ -648,7 +657,7 @@ export function UserRegistration() {
                     </button>
 
                     {showPasswordFields && (
-                      <div className="mt-3 space-y-3 p-3 bg-gray-50 rounded-lg">
+                      <div className="mt-3 space-y-3 p-3 bg-red-50 rounded-xl">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
                             New Password
@@ -663,7 +672,7 @@ export function UserRegistration() {
                                 password: e.target.value,
                               })
                             }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            className="w-full px-3 py-2 border border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500"
                             placeholder="Enter new password"
                           />
                         </div>
@@ -681,7 +690,7 @@ export function UserRegistration() {
                                 confirmPassword: e.target.value,
                               })
                             }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            className="w-full px-3 py-2 border border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500"
                             placeholder="Confirm new password"
                           />
                         </div>
@@ -702,7 +711,7 @@ export function UserRegistration() {
                         onChange={(e) =>
                           setFormData({ ...formData, password: e.target.value })
                         }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 border border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500"
                         placeholder="Enter password"
                       />
                     </div>
@@ -721,7 +730,7 @@ export function UserRegistration() {
                             confirmPassword: e.target.value,
                           })
                         }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 border border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500"
                         placeholder="Confirm password"
                       />
                     </div>
@@ -732,12 +741,12 @@ export function UserRegistration() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors disabled:opacity-50"
+                    className="flex-1 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white font-semibold py-2 px-4 rounded-xl transition-all disabled:opacity-50"
                   >
                     {loading ? (
                       <span className="flex items-center justify-center">
                         <RefreshCw className="w-4 h-4 animate-spin mr-2" />
-                        {editingUser ? "Updating..." : "Registering..."}
+                        {editingUser ? "Updating..." : "Adding Staff..."}
                       </span>
                     ) : (
                       <span className="flex items-center justify-center">
@@ -746,14 +755,14 @@ export function UserRegistration() {
                         ) : (
                           <UserPlus className="w-4 h-4 mr-2" />
                         )}
-                        {editingUser ? "Update User" : "Register User"}
+                        {editingUser ? "Update Staff" : "Add to Kitchen"}
                       </span>
                     )}
                   </button>
                   <button
                     type="button"
                     onClick={resetForm}
-                    className="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                    className="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-xl transition-colors"
                   >
                     <X className="w-4 h-4 mr-2 inline" /> Cancel
                   </button>
@@ -766,21 +775,21 @@ export function UserRegistration() {
 
       {users.length === 0 && !loading && (
         <div className="text-center py-12">
-          <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <User className="w-8 h-8 text-gray-400" />
+          <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <ChefHat className="w-8 h-8 text-red-400" />
           </div>
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            No users found
+            No kitchen staff found
           </h3>
           <p className="text-gray-600 mb-4">
-            Get started by adding your first team member.
+            Get started by adding your first kitchen team member.
           </p>
           {currentUser?.role === "admin" && (
             <button
               onClick={() => setShowForm(true)}
-              className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors"
+              className="bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white font-semibold py-2 px-6 rounded-xl transition-all"
             >
-              Add First User
+              Add First Kitchen Staff
             </button>
           )}
         </div>

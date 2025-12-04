@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Eye, EyeOff, Lock, Mail } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail, ChefHat } from "lucide-react";
 
 export function AdminLogin() {
   const [formData, setFormData] = useState({
@@ -19,7 +19,6 @@ export function AdminLogin() {
 
   const from = location.state?.from?.pathname || "/admin";
 
-  // src/pages/admin/AdminLogin.jsx - Update the handleSubmit function
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -51,16 +50,16 @@ export function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-teal-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 to-amber-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
-          <div className="mx-auto w-20 h-20 bg-gradient-to-br from-blue-600 to-teal-600 rounded-2xl flex items-center justify-center mb-6">
-            <Lock className="w-8 h-8 text-white" />
+          <div className="mx-auto w-20 h-20 bg-gradient-to-br from-red-600 to-amber-600 rounded-2xl flex items-center justify-center mb-6">
+            <ChefHat className="w-8 h-8 text-white" />
           </div>
-          <h2 className="text-3xl font-bold text-gray-900">Admin Access</h2>
+          <h2 className="text-3xl font-bold text-gray-900">Kitchen Access</h2>
           <p className="mt-2 text-sm text-gray-600">
-            Serenity Place Rehabilitation Center
+            Kijiji Cuisine Admin Portal
           </p>
         </div>
 
@@ -89,8 +88,8 @@ export function AdminLogin() {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                  placeholder="admin@serenityplace.org"
+                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
+                  placeholder="admin@kijijicuisine.com"
                 />
               </div>
             </div>
@@ -112,7 +111,7 @@ export function AdminLogin() {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full pl-12 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  className="w-full pl-12 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
                   placeholder="Enter your password"
                 />
                 <button
@@ -129,28 +128,31 @@ export function AdminLogin() {
               </div>
             </div>
           </div>
+
           {/* Submit Button */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
               <div className="flex items-center justify-center">
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                Signing in...
+                Accessing Kitchen...
               </div>
             ) : (
               "Sign in to Dashboard"
             )}
           </button>
+
           {/* Security Notice */}
           <div className="text-center">
             <p className="text-xs text-gray-500">
-              Restricted access. Authorized personnel only.
+              Authorized culinary staff only
             </p>
           </div>
-          {/* // Add this to AdminLogin.jsx right before the form closing tag */}
+
+          {/* Auto-fill for testing */}
           <button
             type="button"
             onClick={() => {
@@ -163,7 +165,7 @@ export function AdminLogin() {
                 100
               );
             }}
-            className="w-full bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-xl transition-colors duration-200 mt-4"
+            className="w-full bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-xl transition-colors duration-200 mt-4"
           >
             Auto-fill Test Credentials
           </button>

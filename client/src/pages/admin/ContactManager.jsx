@@ -11,10 +11,11 @@ import {
   Phone,
   CheckCircle,
   Clock,
-  Archive,
+  ChefHat,
+  Utensils,
 } from "lucide-react";
 import { format } from "date-fns";
-import { API_BASE_URL } from "../../config/api"; 
+import { API_BASE_URL } from "../../config/api";
 
 export function ContactManager() {
   const [contacts, setContacts] = useState([]);
@@ -27,20 +28,20 @@ export function ContactManager() {
 
   const statusOptions = [
     { value: "all", label: "All Status", color: "gray" },
-    { value: "new", label: "New", color: "blue" },
-    { value: "contacted", label: "Contacted", color: "yellow" },
+    { value: "new", label: "New Inquiry", color: "red" },
+    { value: "contacted", label: "Contacted", color: "amber" },
     { value: "resolved", label: "Resolved", color: "green" },
   ];
 
   const inquiryTypeColors = {
-    general: "bg-blue-100 text-blue-800",
-    appointment: "bg-purple-100 text-purple-800",
-    counseling: "bg-green-100 text-green-800",
-    facility: "bg-orange-100 text-orange-800",
+    catering: "bg-red-100 text-red-800",
+    events: "bg-purple-100 text-purple-800",
+    recipes: "bg-green-100 text-green-800",
+    feedback: "bg-blue-100 text-blue-800",
     other: "bg-gray-100 text-gray-800",
   };
 
-  const API_BASE = `${API_BASE_URL}/api`; 
+  const API_BASE = `${API_BASE_URL}/api`;
 
   useEffect(() => {
     fetchContacts();
@@ -67,7 +68,7 @@ export function ContactManager() {
       }
     } catch (error) {
       console.error("Error fetching contacts:", error);
-      setMessage("Error loading contacts");
+      setMessage("Error loading inquiries");
     } finally {
       setLoading(false);
     }
@@ -131,11 +132,11 @@ export function ContactManager() {
           setSelectedContact(updatedContact);
         }
 
-        setMessage(`Contact marked as ${newStatus}`);
+        setMessage(`Inquiry marked as ${newStatus}`);
       }
     } catch (error) {
       console.error("Error updating contact status:", error);
-      setMessage("Error updating contact status");
+      setMessage("Error updating inquiry status");
     }
   };
 
@@ -155,9 +156,9 @@ export function ContactManager() {
   const getStatusColor = (status) => {
     switch (status) {
       case "new":
-        return "bg-blue-100 text-blue-800 border-blue-200";
+        return "bg-red-100 text-red-800 border-red-200";
       case "contacted":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+        return "bg-amber-100 text-amber-800 border-amber-200";
       case "resolved":
         return "bg-green-100 text-green-800 border-green-200";
       default:
@@ -177,11 +178,9 @@ export function ContactManager() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
-            Contact Management
-          </h1>
+          <h1 className="text-2xl font-bold text-gray-900">Event Inquiries</h1>
           <p className="text-gray-600">
-            Manage and respond to contact form submissions
+            Manage and respond to event booking inquiries
           </p>
         </div>
       </div>
@@ -192,63 +191,63 @@ export function ContactManager() {
           {Array.from({ length: 4 }).map((_, index) => (
             <div
               key={index}
-              className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 animate-pulse"
+              className="bg-white rounded-2xl shadow-sm border border-red-100 p-6 animate-pulse"
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="w-20 h-4 bg-gray-300 rounded mb-2"></div>
-                  <div className="w-12 h-6 bg-gray-300 rounded"></div>
+                  <div className="w-20 h-4 bg-red-200 rounded mb-2"></div>
+                  <div className="w-12 h-6 bg-red-200 rounded"></div>
                 </div>
-                <div className="w-12 h-12 bg-gray-200 rounded-xl"></div>
+                <div className="w-12 h-12 bg-red-200 rounded-xl"></div>
               </div>
             </div>
           ))}
         </div>
       ) : stats ? (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+          <div className="bg-white rounded-2xl shadow-sm border border-red-100 p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">
-                  Total Contacts
+                  Total Inquiries
                 </p>
                 <p className="text-2xl font-bold text-gray-900">
                   {stats.total}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                <MessageSquare className="w-6 h-6 text-blue-600" />
+              <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                <MessageSquare className="w-6 h-6 text-red-600" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+          <div className="bg-white rounded-2xl shadow-sm border border-red-100 p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">New</p>
-                <p className="text-2xl font-bold text-blue-600">{stats.new}</p>
+                <p className="text-2xl font-bold text-red-600">{stats.new}</p>
               </div>
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                <Clock className="w-6 h-6 text-blue-600" />
+              <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                <Clock className="w-6 h-6 text-red-600" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+          <div className="bg-white rounded-2xl shadow-sm border border-red-100 p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Contacted</p>
-                <p className="text-2xl font-bold text-yellow-600">
+                <p className="text-2xl font-bold text-amber-600">
                   {stats.contacted}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
-                <MessageSquare className="w-6 h-6 text-yellow-600" />
+              <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
+                <MessageSquare className="w-6 h-6 text-amber-600" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+          <div className="bg-white rounded-2xl shadow-sm border border-red-100 p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Resolved</p>
@@ -281,25 +280,25 @@ export function ContactManager() {
         {/* Contacts List */}
         <div className="lg:col-span-2 space-y-4">
           {/* Filters and Search */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4">
+          <div className="bg-white rounded-2xl shadow-sm border border-red-100 p-4">
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-red-400 w-4 h-4" />
                 <input
                   type="text"
-                  placeholder="Search contacts..."
+                  placeholder="Search inquiries..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full pl-10 pr-4 py-2 border border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500"
                 />
               </div>
               <div className="sm:w-48">
                 <div className="relative">
-                  <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-red-400 w-4 h-4" />
                   <select
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full pl-10 pr-4 py-2 border border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500"
                   >
                     {statusOptions.map((option) => (
                       <option key={option.value} value={option.value}>
@@ -312,31 +311,31 @@ export function ContactManager() {
             </div>
           </div>
 
-          {/* Contacts List */}
+          {/* Inquiries List */}
           <div className="space-y-4">
             {loading ? (
               Array.from({ length: 3 }).map((_, index) => (
                 <div
                   key={index}
-                  className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 animate-pulse"
+                  className="bg-white rounded-2xl shadow-sm border border-red-100 p-6 animate-pulse"
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
+                      <div className="w-10 h-10 bg-red-200 rounded-full"></div>
                       <div>
-                        <div className="w-24 h-4 bg-gray-300 rounded mb-2"></div>
-                        <div className="w-32 h-3 bg-gray-200 rounded"></div>
+                        <div className="w-24 h-4 bg-red-200 rounded mb-2"></div>
+                        <div className="w-32 h-3 bg-red-100 rounded"></div>
                       </div>
                     </div>
-                    <div className="w-16 h-6 bg-gray-300 rounded-full"></div>
+                    <div className="w-16 h-6 bg-red-200 rounded-full"></div>
                   </div>
                   <div className="space-y-2 mb-3">
-                    <div className="w-full h-3 bg-gray-200 rounded"></div>
-                    <div className="w-2/3 h-3 bg-gray-200 rounded"></div>
+                    <div className="w-full h-3 bg-red-100 rounded"></div>
+                    <div className="w-2/3 h-3 bg-red-100 rounded"></div>
                   </div>
                   <div className="flex items-center justify-between">
-                    <div className="w-20 h-4 bg-gray-200 rounded"></div>
-                    <div className="w-16 h-4 bg-gray-200 rounded"></div>
+                    <div className="w-20 h-4 bg-red-100 rounded"></div>
+                    <div className="w-16 h-4 bg-red-100 rounded"></div>
                   </div>
                 </div>
               ))
@@ -344,16 +343,16 @@ export function ContactManager() {
               filteredContacts.map((contact) => (
                 <div
                   key={contact._id}
-                  className={`bg-white rounded-2xl shadow-sm border border-gray-200 p-6 cursor-pointer hover:shadow-md transition-shadow ${
+                  className={`bg-white rounded-2xl shadow-sm border border-red-100 p-6 cursor-pointer hover:shadow-md transition-shadow ${
                     selectedContact?._id === contact._id
-                      ? "ring-2 ring-blue-500"
+                      ? "ring-2 ring-red-500"
                       : ""
                   }`}
                   onClick={() => fetchContactDetails(contact._id)}
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-teal-500 rounded-full flex items-center justify-center">
+                      <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-amber-500 rounded-full flex items-center justify-center">
                         <span className="text-white font-semibold text-sm">
                           {contact.name
                             .split(" ")
@@ -386,19 +385,20 @@ export function ContactManager() {
                   <div className="flex items-center justify-between text-sm text-gray-500">
                     <div className="flex items-center space-x-4">
                       <div className="flex items-center">
-                        <Phone className="w-4 h-4 mr-1" />
+                        <Phone className="w-4 h-4 mr-1 text-red-400" />
                         {contact.phone}
                       </div>
                       <span
                         className={`px-2 py-1 rounded-full text-xs ${
-                          inquiryTypeColors[contact.inquiryType]
+                          inquiryTypeColors[contact.inquiryType] ||
+                          inquiryTypeColors.other
                         }`}
                       >
-                        {contact.inquiryType}
+                        {contact.inquiryType || "catering"}
                       </span>
                     </div>
                     <div className="flex items-center">
-                      <Calendar className="w-4 h-4 mr-1" />
+                      <Calendar className="w-4 h-4 mr-1 text-red-400" />
                       {format(new Date(contact.createdAt), "MMM dd, yyyy")}
                     </div>
                   </div>
@@ -406,73 +406,73 @@ export function ContactManager() {
               ))
             ) : (
               <div className="text-center py-12">
-                <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <Search className="w-8 h-8 text-gray-400" />
+                <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <Search className="w-8 h-8 text-red-400" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  No contacts found
+                  No inquiries found
                 </h3>
                 <p className="text-gray-600">
                   {searchTerm || statusFilter !== "all"
                     ? "Try adjusting your search or filters"
-                    : "No contact submissions yet"}
+                    : "No event inquiries yet"}
                 </p>
               </div>
             )}
           </div>
         </div>
 
-        {/* Contact Details Sidebar */}
+        {/* Inquiry Details Sidebar */}
         <div className="lg:col-span-1">
           {loading ? (
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 animate-pulse">
+            <div className="bg-white rounded-2xl shadow-sm border border-red-100 p-6 animate-pulse">
               <div className="flex items-center justify-between mb-6">
-                <div className="w-32 h-6 bg-gray-300 rounded"></div>
-                <div className="w-6 h-6 bg-gray-300 rounded"></div>
+                <div className="w-32 h-6 bg-red-200 rounded"></div>
+                <div className="w-6 h-6 bg-red-200 rounded"></div>
               </div>
               <div className="space-y-4 mb-6">
                 <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-gray-300 rounded-full"></div>
+                  <div className="w-12 h-12 bg-red-200 rounded-full"></div>
                   <div>
-                    <div className="w-24 h-4 bg-gray-300 rounded mb-2"></div>
-                    <div className="w-32 h-3 bg-gray-200 rounded"></div>
+                    <div className="w-24 h-4 bg-red-200 rounded mb-2"></div>
+                    <div className="w-32 h-3 bg-red-100 rounded"></div>
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <div className="w-20 h-4 bg-gray-200 rounded"></div>
-                  <div className="w-24 h-4 bg-gray-200 rounded"></div>
-                  <div className="w-16 h-6 bg-gray-300 rounded-full"></div>
+                  <div className="w-20 h-4 bg-red-100 rounded"></div>
+                  <div className="w-24 h-4 bg-red-100 rounded"></div>
+                  <div className="w-16 h-6 bg-red-200 rounded-full"></div>
                 </div>
               </div>
               <div className="mb-6">
-                <div className="w-16 h-4 bg-gray-300 rounded mb-2"></div>
-                <div className="bg-gray-200 rounded-lg p-4 space-y-2">
-                  <div className="w-full h-3 bg-gray-300 rounded"></div>
-                  <div className="w-4/5 h-3 bg-gray-300 rounded"></div>
-                  <div className="w-3/5 h-3 bg-gray-300 rounded"></div>
+                <div className="w-16 h-4 bg-red-200 rounded mb-2"></div>
+                <div className="bg-red-100 rounded-xl p-4 space-y-2">
+                  <div className="w-full h-3 bg-red-200 rounded"></div>
+                  <div className="w-4/5 h-3 bg-red-200 rounded"></div>
+                  <div className="w-3/5 h-3 bg-red-200 rounded"></div>
                 </div>
               </div>
               <div className="space-y-3">
-                <div className="w-24 h-4 bg-gray-300 rounded"></div>
+                <div className="w-24 h-4 bg-red-200 rounded"></div>
                 <div className="flex flex-wrap gap-2">
                   {Array.from({ length: 3 }).map((_, index) => (
                     <div
                       key={index}
-                      className="w-20 h-8 bg-gray-200 rounded-lg"
+                      className="w-20 h-8 bg-red-100 rounded-xl"
                     ></div>
                   ))}
                 </div>
               </div>
             </div>
           ) : selectedContact ? (
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sticky top-6">
+            <div className="bg-white rounded-2xl shadow-sm border border-red-100 p-6 sticky top-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-semibold text-gray-900">
-                  Contact Details
+                  Inquiry Details
                 </h3>
                 <button
                   onClick={() => setSelectedContact(null)}
-                  className="text-gray-400 hover:text-gray-600"
+                  className="text-gray-400 hover:text-red-600"
                 >
                   ×
                 </button>
@@ -481,7 +481,7 @@ export function ContactManager() {
               {/* Contact Info */}
               <div className="space-y-4 mb-6">
                 <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-teal-500 rounded-full flex items-center justify-center">
+                  <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-amber-500 rounded-full flex items-center justify-center">
                     <span className="text-white font-semibold text-sm">
                       {selectedContact.name
                         .split(" ")
@@ -502,11 +502,11 @@ export function ContactManager() {
 
                 <div className="space-y-2">
                   <div className="flex items-center text-sm text-gray-600">
-                    <Phone className="w-4 h-4 mr-2" />
+                    <Phone className="w-4 h-4 mr-2 text-red-400" />
                     {selectedContact.phone}
                   </div>
                   <div className="flex items-center text-sm text-gray-600">
-                    <Calendar className="w-4 h-4 mr-2" />
+                    <Calendar className="w-4 h-4 mr-2 text-red-400" />
                     {format(
                       new Date(selectedContact.createdAt),
                       "MMM dd, yyyy 'at' h:mm a"
@@ -515,10 +515,11 @@ export function ContactManager() {
                   <div className="flex items-center text-sm">
                     <span
                       className={`px-2 py-1 rounded-full ${
-                        inquiryTypeColors[selectedContact.inquiryType]
+                        inquiryTypeColors[selectedContact.inquiryType] ||
+                        inquiryTypeColors.other
                       }`}
                     >
-                      {selectedContact.inquiryType}
+                      {selectedContact.inquiryType || "catering"}
                     </span>
                   </div>
                 </div>
@@ -527,7 +528,7 @@ export function ContactManager() {
               {/* Message */}
               <div className="mb-6">
                 <h5 className="font-semibold text-gray-900 mb-2">Message</h5>
-                <div className="bg-gray-50 rounded-lg p-4">
+                <div className="bg-red-50 rounded-xl p-4">
                   <p className="text-gray-700 whitespace-pre-wrap">
                     {selectedContact.message}
                   </p>
@@ -547,7 +548,7 @@ export function ContactManager() {
                           updateContactStatus(selectedContact._id, option.value)
                         }
                         disabled={selectedContact.status === option.value}
-                        className={`flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        className={`flex items-center px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
                           selectedContact.status === option.value
                             ? getStatusColor(option.value)
                             : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -564,10 +565,10 @@ export function ContactManager() {
               {selectedContact.adminNotes && (
                 <div className="mt-6">
                   <h5 className="font-semibold text-gray-900 mb-2">
-                    Admin Notes
+                    Chef's Notes
                   </h5>
-                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                    <p className="text-yellow-800 text-sm">
+                  <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+                    <p className="text-amber-800 text-sm">
                       {selectedContact.adminNotes}
                     </p>
                   </div>
@@ -575,16 +576,15 @@ export function ContactManager() {
               )}
             </div>
           ) : (
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 text-center">
-              <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Eye className="w-8 h-8 text-gray-400" />
+            <div className="bg-white rounded-2xl shadow-sm border border-red-100 p-8 text-center">
+              <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <ChefHat className="w-8 h-8 text-red-400" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Select a Contact
+                Select an Inquiry
               </h3>
               <p className="text-gray-600">
-                Click on a contact from the list to view details and manage its
-                status.
+                Click on an inquiry to view details and manage its status.
               </p>
             </div>
           )}

@@ -1,4 +1,4 @@
-// src/pages/admin/GalleryManager.jsx
+// src/pages/admin/GalleryManager.jsx - CORRECTED VERSION
 import { useState, useEffect } from "react";
 import {
   Plus,
@@ -7,9 +7,10 @@ import {
   Search,
   Image as ImageIcon,
   Star,
-  Filter,
+  ChefHat,
+  Upload,
 } from "lucide-react";
-import { API_BASE_URL } from "../../config/api"; 
+import { API_BASE_URL } from "../../config/api";
 
 export function GalleryManager() {
   const [galleryItems, setGalleryItems] = useState([]);
@@ -20,11 +21,12 @@ export function GalleryManager() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [message, setMessage] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
 
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    category: "nature",
+    category: "food",
     featured: false,
     order: 0,
     image: null,
@@ -32,15 +34,15 @@ export function GalleryManager() {
 
   const categories = [
     { value: "all", label: "All Categories" },
-    { value: "nature", label: "Nature" },
-    { value: "wellness", label: "Wellness" },
-    { value: "meditation", label: "Meditation" },
-    { value: "retreat", label: "Retreat" },
+    { value: "food", label: "Food" },
     { value: "events", label: "Events" },
-    { value: "facilities", label: "Facilities" },
+    { value: "team", label: "Kitchen Team" },
+    { value: "venues", label: "Venues" },
+    { value: "presentation", label: "Presentation" },
+    { value: "desserts", label: "Desserts" },
   ];
 
-  const API_BASE = `${API_BASE_URL}/api`; 
+  const API_BASE = `${API_BASE_URL}/api`;
 
   useEffect(() => {
     fetchGalleryItems();
@@ -62,7 +64,7 @@ export function GalleryManager() {
 
       if (response.ok) {
         const data = await response.json();
-        setGalleryItems(data.items);
+        setGalleryItems(data.items || data);
       } else {
         throw new Error("Failed to fetch gallery items");
       }
@@ -74,11 +76,23 @@ export function GalleryManager() {
     }
   };
 
-  // In your handleSubmit function in GalleryManager.jsx - UPDATE THIS PART
+  // CORRECTED handleSubmit function
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validation
     if (!formData.image && !editingItem) {
       setMessage("Please select an image");
+      return;
+    }
+
+    if (!formData.title.trim()) {
+      setMessage("Please enter a title");
+      return;
+    }
+
+    if (!formData.category) {
+      setMessage("Please select a category");
       return;
     }
 
@@ -88,9 +102,17 @@ export function GalleryManager() {
     try {
       const token = localStorage.getItem("token");
 
-      // For updates (PUT), send as JSON
+      // For updates (PUT)
       if (editingItem) {
         const url = `${API_BASE}/gallery/${editingItem._id}`;
+
+        const updateData = {
+          title: formData.title,
+          description: formData.description,
+          category: formData.category,
+          featured: formData.featured,
+          order: formData.order || 0,
+        };
 
         const response = await fetch(url, {
           method: "PUT",
@@ -98,13 +120,7 @@ export function GalleryManager() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({
-            title: formData.title,
-            description: formData.description,
-            category: formData.category,
-            featured: formData.featured,
-            order: formData.order,
-          }),
+          body: JSON.stringify(updateData),
         });
 
         const data = await response.json();
@@ -114,41 +130,47 @@ export function GalleryManager() {
           resetForm();
           setMessage("Gallery item updated successfully!");
         } else {
-          setMessage(`Error: ${data.message}`);
+          setMessage(`Error: ${data.message || "Update failed"}`);
         }
       } else {
-        // For new items (POST), use FormData
+        // For new items (POST) - use FormData correctly
         const formDataToSend = new FormData();
 
         formDataToSend.append("title", formData.title);
-        formDataToSend.append("description", formData.description);
+        formDataToSend.append("description", formData.description || "");
         formDataToSend.append("category", formData.category);
         formDataToSend.append("featured", formData.featured);
-        formDataToSend.append("order", formData.order);
+        formDataToSend.append("order", formData.order || 0);
 
         if (formData.image) {
+          // Make sure we're appending the file correctly
           formDataToSend.append("image", formData.image);
         }
+
+        console.log("Sending form data with image:", formData.image?.name);
 
         const response = await fetch(`${API_BASE}/gallery`, {
           method: "POST",
           headers: {
+            // DON'T set Content-Type header for FormData - browser will set it with boundary
             Authorization: `Bearer ${token}`,
           },
           body: formDataToSend,
         });
 
         const data = await response.json();
+        console.log("Response data:", data);
 
         if (response.ok) {
           await fetchGalleryItems();
           resetForm();
           setMessage("Gallery item created successfully!");
         } else {
-          setMessage(`Error: ${data.message}`);
+          setMessage(`Error: ${data.message || "Upload failed"}`);
         }
       }
     } catch (error) {
+      console.error("Network error:", error);
       setMessage("Network error. Please try again.");
     } finally {
       setUploading(false);
@@ -161,10 +183,11 @@ export function GalleryManager() {
       title: item.title,
       description: item.description || "",
       category: item.category,
-      featured: item.featured,
+      featured: item.featured || false,
       order: item.order || 0,
       image: null,
     });
+    setImagePreview(item.image?.secure_url || null);
     setShowForm(true);
   };
 
@@ -196,11 +219,12 @@ export function GalleryManager() {
     setFormData({
       title: "",
       description: "",
-      category: "nature",
+      category: "food",
       featured: false,
       order: 0,
       image: null,
     });
+    setImagePreview(null);
     setEditingItem(null);
     setShowForm(false);
   };
@@ -212,20 +236,38 @@ export function GalleryManager() {
         setMessage("Image size must be less than 5MB");
         return;
       }
+
+      // Check file type
+      const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+      if (!validTypes.includes(file.type)) {
+        setMessage("Please select a valid image file (JPEG, PNG, WEBP)");
+        return;
+      }
+
       setFormData({ ...formData, image: file });
+
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
   const filteredItems = galleryItems.filter(
     (item) =>
       item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchTerm.toLowerCase())
+      item.description?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (loading) {
     return (
       <div className="p-6">
-        <div className="animate-pulse">Loading gallery...</div>
+        <div className="flex items-center justify-center">
+          <ChefHat className="w-6 h-6 animate-pulse text-red-600 mr-2" />
+          <span className="text-red-600">Loading food gallery...</span>
+        </div>
       </div>
     );
   }
@@ -236,18 +278,18 @@ export function GalleryManager() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
-            Gallery Management
+            Food Gallery Management
           </h1>
           <p className="text-gray-600">
-            Manage gallery images and featured content
+            Manage culinary images and featured content
           </p>
         </div>
         <button
           onClick={() => setShowForm(true)}
-          className="flex items-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+          className="flex items-center bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white font-semibold py-2 px-4 rounded-xl transition-all shadow-lg hover:shadow-xl"
         >
           <Plus className="w-4 h-4 mr-2" />
-          Add Image
+          Add Food Image
         </button>
       </div>
 
@@ -260,29 +302,61 @@ export function GalleryManager() {
               : "bg-green-50 border border-green-200 text-green-800"
           }`}
         >
-          {message}
+          <div className="flex items-center justify-between">
+            <span>{message}</span>
+            <button
+              onClick={() => setMessage("")}
+              className="text-gray-500 hover:text-gray-700"
+            >
+              ✕
+            </button>
+          </div>
         </div>
       )}
 
       {/* Gallery Form */}
       {showForm && (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-2xl shadow-lg border border-red-100 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">
-            {editingItem ? "Edit Gallery Item" : "Add New Gallery Item"}
+            <ChefHat className="w-5 h-5 inline mr-2 text-red-600" />
+            {editingItem ? "Edit Food Image" : "Add New Food Image"}
           </h2>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 gap-4">
-              {/* Image Upload */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {editingItem ? "Change Image (optional)" : "Image *"}
-                </label>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Image Upload Section */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {editingItem ? "Change Image (optional)" : "Food Image *"}
+              </label>
+
+              <div className="space-y-4">
+                {/* Image Preview */}
+                {imagePreview && (
+                  <div className="relative rounded-xl overflow-hidden border-2 border-red-200">
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      className="w-full h-48 object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setImagePreview(null);
+                        setFormData({ ...formData, image: null });
+                      }}
+                      className="absolute top-2 right-2 bg-red-600 text-white p-1 rounded-full hover:bg-red-700"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                )}
+
+                {/* Upload Area */}
                 <div className="flex items-center justify-center w-full">
-                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-red-300 border-dashed rounded-xl cursor-pointer bg-red-50 hover:bg-red-100 transition-colors">
                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                      <ImageIcon className="w-8 h-8 mb-2 text-gray-500" />
-                      <p className="text-sm text-gray-500">
+                      <Upload className="w-8 h-8 mb-2 text-red-500" />
+                      <p className="text-sm text-gray-600">
                         <span className="font-semibold">Click to upload</span>{" "}
                         or drag and drop
                       </p>
@@ -298,121 +372,144 @@ export function GalleryManager() {
                     />
                   </label>
                 </div>
+
                 {formData.image && (
-                  <p className="text-sm text-green-600 mt-2">
-                    Image selected: {formData.image.name}
+                  <p className="text-sm text-green-600 flex items-center">
+                    <ImageIcon className="w-4 h-4 mr-1" />
+                    Selected: {formData.image.name}
                   </p>
                 )}
               </div>
+            </div>
 
+            {/* Title */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Title *
+              </label>
+              <input
+                type="text"
+                required
+                value={formData.title}
+                onChange={(e) =>
+                  setFormData({ ...formData, title: e.target.value })
+                }
+                className="w-full px-3 py-2 border border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                placeholder="e.g., Kenyan Chapati Platter"
+              />
+            </div>
+
+            {/* Description */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Description
+              </label>
+              <textarea
+                rows={3}
+                value={formData.description}
+                onChange={(e) =>
+                  setFormData({ ...formData, description: e.target.value })
+                }
+                className="w-full px-3 py-2 border border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                placeholder="Optional description or recipe notes"
+              />
+            </div>
+
+            {/* Category and Order */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Title *
+                  Category *
                 </label>
-                <input
-                  type="text"
+                <select
                   required
-                  value={formData.title}
+                  value={formData.category}
                   onChange={(e) =>
-                    setFormData({ ...formData, title: e.target.value })
+                    setFormData({ ...formData, category: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Enter image title"
-                />
+                  className="w-full px-3 py-2 border border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                >
+                  {categories
+                    .filter((cat) => cat.value !== "all")
+                    .map((category) => (
+                      <option key={category.value} value={category.value}>
+                        {category.label}
+                      </option>
+                    ))}
+                </select>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Description
+                  Display Order
                 </label>
-                <textarea
-                  rows={3}
-                  value={formData.description}
-                  onChange={(e) =>
-                    setFormData({ ...formData, description: e.target.value })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Optional description"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Category *
-                  </label>
-                  <select
-                    required
-                    value={formData.category}
-                    onChange={(e) =>
-                      setFormData({ ...formData, category: e.target.value })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  >
-                    {categories
-                      .filter((cat) => cat.value !== "all")
-                      .map((category) => (
-                        <option key={category.value} value={category.value}>
-                          {category.label}
-                        </option>
-                      ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Display Order
-                  </label>
-                  <input
-                    type="number"
-                    value={formData.order}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        order: parseInt(e.target.value) || 0,
-                      })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="0"
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center">
                 <input
-                  type="checkbox"
-                  id="featured"
-                  checked={formData.featured}
+                  type="number"
+                  min="0"
+                  value={formData.order}
                   onChange={(e) =>
-                    setFormData({ ...formData, featured: e.target.checked })
+                    setFormData({
+                      ...formData,
+                      order: parseInt(e.target.value) || 0,
+                    })
                   }
-                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                  placeholder="0"
                 />
-                <label
-                  htmlFor="featured"
-                  className="ml-2 text-sm text-gray-700"
-                >
-                  Feature on homepage (max 3 featured images will be shown)
-                </label>
               </div>
             </div>
 
+            {/* Featured Checkbox */}
+            <div className="flex items-center p-3 bg-red-50 rounded-xl">
+              <input
+                type="checkbox"
+                id="featured"
+                checked={formData.featured}
+                onChange={(e) =>
+                  setFormData({ ...formData, featured: e.target.checked })
+                }
+                className="w-4 h-4 text-red-600 border-red-300 rounded focus:ring-red-500"
+              />
+              <label htmlFor="featured" className="ml-2 text-sm text-gray-700">
+                <span className="font-medium">Feature on homepage</span>
+                <span className="text-gray-500 ml-1">
+                  (max 3 featured images)
+                </span>
+              </label>
+            </div>
+
+            {/* Form Actions */}
             <div className="flex gap-3 pt-4">
               <button
                 type="submit"
                 disabled={uploading}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors disabled:opacity-50"
+                className="flex-1 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white font-semibold py-3 px-6 rounded-xl transition-all disabled:opacity-50 flex items-center justify-center"
               >
-                {uploading
-                  ? "Uploading..."
-                  : editingItem
-                  ? "Update Item"
-                  : "Add Item"}
+                {uploading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                    {editingItem ? "Updating..." : "Uploading..."}
+                  </>
+                ) : (
+                  <>
+                    {editingItem ? (
+                      <>
+                        <Edit className="w-4 h-4 mr-2" />
+                        Update Food Image
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="w-4 h-4 mr-2" />
+                        Add Food Image
+                      </>
+                    )}
+                  </>
+                )}
               </button>
               <button
                 type="button"
                 onClick={resetForm}
-                className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg transition-colors"
+                className="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-6 rounded-xl transition-colors"
               >
                 Cancel
               </button>
@@ -422,23 +519,23 @@ export function GalleryManager() {
       )}
 
       {/* Filters and Search */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4">
+      <div className="bg-white rounded-2xl shadow-lg border border-red-100 p-4">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-red-400 w-4 h-4" />
             <input
               type="text"
-              placeholder="Search gallery..."
+              placeholder="Search food images..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full pl-10 pr-4 py-2 border border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500"
             />
           </div>
           <div className="sm:w-64">
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500"
             >
               {categories.map((category) => (
                 <option key={category.value} value={category.value}>
@@ -455,24 +552,28 @@ export function GalleryManager() {
         {filteredItems.map((item) => (
           <div
             key={item._id}
-            className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
+            className="bg-white rounded-2xl shadow-lg border border-red-100 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
           >
-            <div className="aspect-w-16 aspect-h-9 bg-gray-100">
+            <div className="relative h-48 bg-gradient-to-br from-red-100 to-amber-100 overflow-hidden">
               <img
-                src={item.image.secure_url}
+                src={item.image?.secure_url || item.image}
                 alt={item.title}
-                className="w-full h-48 object-cover"
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
               />
+              {item.featured && (
+                <div className="absolute top-3 right-3 bg-gradient-to-r from-amber-500 to-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                  <Star className="w-3 h-3 inline mr-1" />
+                  Featured
+                </div>
+              )}
             </div>
 
             <div className="p-4">
               <div className="flex items-start justify-between mb-2">
                 <h3 className="font-semibold text-gray-900 line-clamp-1">
+                  <ChefHat className="w-4 h-4 inline mr-1 text-red-500" />
                   {item.title}
                 </h3>
-                {item.featured && (
-                  <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                )}
               </div>
 
               <p className="text-sm text-gray-600 mb-3 line-clamp-2">
@@ -480,21 +581,23 @@ export function GalleryManager() {
               </p>
 
               <div className="flex items-center justify-between">
-                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
                   {item.category}
                 </span>
 
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => handleEdit(item)}
-                    className="text-blue-600 hover:text-blue-700 p-1 rounded hover:bg-blue-50 transition-colors"
+                    className="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                    title="Edit"
                   >
                     <Edit className="w-4 h-4" />
                   </button>
 
                   <button
                     onClick={() => handleDelete(item._id)}
-                    className="text-red-600 hover:text-red-700 p-1 rounded hover:bg-red-50 transition-colors"
+                    className="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                    title="Delete"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -508,23 +611,23 @@ export function GalleryManager() {
       {/* Empty State */}
       {filteredItems.length === 0 && !loading && (
         <div className="text-center py-12">
-          <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <ImageIcon className="w-8 h-8 text-gray-400" />
+          <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <ChefHat className="w-8 h-8 text-red-400" />
           </div>
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            No gallery items found
+            No food images found
           </h3>
           <p className="text-gray-600 mb-4">
             {searchTerm || selectedCategory !== "all"
               ? "Try adjusting your search or filters"
-              : "Get started by adding your first gallery image"}
+              : "Get started by adding your first culinary image"}
           </p>
           {!searchTerm && selectedCategory === "all" && (
             <button
               onClick={() => setShowForm(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors"
+              className="bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white font-semibold py-2 px-6 rounded-xl transition-all shadow-lg hover:shadow-xl"
             >
-              Add First Image
+              Add First Food Image
             </button>
           )}
         </div>

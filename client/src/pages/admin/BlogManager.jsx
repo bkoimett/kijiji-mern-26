@@ -1,8 +1,17 @@
-// client/src/pages/admin/BlogManager.jsx
+// src/pages/admin/BlogManager.jsx
 import { useState, useEffect } from "react";
-import { Plus, Edit, Trash2, Search, Calendar, User } from "lucide-react";
+import {
+  Plus,
+  Edit,
+  Trash2,
+  Search,
+  Calendar,
+  User,
+  Utensils,
+  ChefHat,
+} from "lucide-react";
 import { format } from "date-fns";
-import { API_BASE_URL } from "../../config/api"; 
+import { API_BASE_URL } from "../../config/api";
 
 export function BlogManager() {
   const [blogs, setBlogs] = useState([]);
@@ -19,7 +28,7 @@ export function BlogManager() {
   });
   const [message, setMessage] = useState("");
 
-  const API_BASE = `${API_BASE_URL}/api`; 
+  const API_BASE = `${API_BASE_URL}/api`;
 
   // Fetch blogs from real backend
   useEffect(() => {
@@ -43,7 +52,7 @@ export function BlogManager() {
         const errorData = await response.json();
         setMessage(`Error: ${errorData.message}`);
         // Fallback to local storage if backend fails
-        const savedBlogs = localStorage.getItem("serenity-blogs");
+        const savedBlogs = localStorage.getItem("kijiji-blogs");
         if (savedBlogs) {
           setBlogs(JSON.parse(savedBlogs));
         }
@@ -52,7 +61,7 @@ export function BlogManager() {
       console.error("Backend unavailable, using local data");
       setMessage("Backend connection failed. Using local data.");
       // Fallback to local storage
-      const savedBlogs = localStorage.getItem("serenity-blogs");
+      const savedBlogs = localStorage.getItem("kijiji-blogs");
       if (savedBlogs) {
         setBlogs(JSON.parse(savedBlogs));
       }
@@ -96,15 +105,15 @@ export function BlogManager() {
         resetForm();
         setMessage(
           editingBlog
-            ? "Blog updated successfully!"
-            : "Blog created successfully!"
+            ? "Blog recipe updated successfully!"
+            : "Culinary article created successfully!"
         );
 
         // Also save to local storage as backup
         const updatedBlogs = editingBlog
           ? blogs.map((blog) => (blog._id === editingBlog._id ? data : blog))
           : [data, ...blogs];
-        localStorage.setItem("serenity-blogs", JSON.stringify(updatedBlogs));
+        localStorage.setItem("kijiji-blogs", JSON.stringify(updatedBlogs));
       } else {
         setMessage(`Error: ${data.message}`);
       }
@@ -121,7 +130,7 @@ export function BlogManager() {
           .map((tag) => tag.trim())
           .filter((tag) => tag),
         status: formData.status,
-        author: { name: "You" },
+        author: { name: "Kijiji Chef" },
         createdAt: editingBlog ? editingBlog.createdAt : new Date(),
         updatedAt: new Date(),
       };
@@ -131,11 +140,11 @@ export function BlogManager() {
           blog._id === editingBlog._id ? blogData : blog
         );
         setBlogs(updatedBlogs);
-        localStorage.setItem("serenity-blogs", JSON.stringify(updatedBlogs));
+        localStorage.setItem("kijiji-blogs", JSON.stringify(updatedBlogs));
       } else {
         const updatedBlogs = [blogData, ...blogs];
         setBlogs(updatedBlogs);
-        localStorage.setItem("serenity-blogs", JSON.stringify(updatedBlogs));
+        localStorage.setItem("kijiji-blogs", JSON.stringify(updatedBlogs));
       }
       resetForm();
     } finally {
@@ -156,7 +165,9 @@ export function BlogManager() {
   };
 
   const handleDelete = async (blogId) => {
-    if (!window.confirm("Are you sure you want to delete this blog post?"))
+    if (
+      !window.confirm("Are you sure you want to delete this culinary article?")
+    )
       return;
 
     try {
@@ -170,10 +181,10 @@ export function BlogManager() {
 
       if (response.ok) {
         await fetchBlogs();
-        setMessage("Blog deleted successfully!");
+        setMessage("Recipe article deleted successfully!");
         // Also update local storage
         const updatedBlogs = blogs.filter((blog) => blog._id !== blogId);
-        localStorage.setItem("serenity-blogs", JSON.stringify(updatedBlogs));
+        localStorage.setItem("kijiji-blogs", JSON.stringify(updatedBlogs));
       } else {
         const errorData = await response.json();
         setMessage(`Error: ${errorData.message}`);
@@ -183,7 +194,7 @@ export function BlogManager() {
       // Fallback to local deletion
       const updatedBlogs = blogs.filter((blog) => blog._id !== blogId);
       setBlogs(updatedBlogs);
-      localStorage.setItem("serenity-blogs", JSON.stringify(updatedBlogs));
+      localStorage.setItem("kijiji-blogs", JSON.stringify(updatedBlogs));
     }
   };
 
@@ -202,7 +213,7 @@ export function BlogManager() {
   const getStatusBadge = (status) => {
     const styles = {
       published: "bg-green-100 text-green-800",
-      draft: "bg-yellow-100 text-yellow-800",
+      draft: "bg-amber-100 text-amber-800",
     };
     return (
       <span
@@ -226,7 +237,10 @@ export function BlogManager() {
   if (loading && blogs.length === 0) {
     return (
       <div className="p-6">
-        <div className="animate-pulse">Loading blogs from database...</div>
+        <div className="animate-pulse text-red-600">
+          <ChefHat className="w-6 h-6 animate-pulse inline mr-2" />
+          Loading culinary articles from kitchen database...
+        </div>
       </div>
     );
   }
@@ -236,17 +250,19 @@ export function BlogManager() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Blog Management</h1>
+          <h1 className="text-2xl font-bold text-gray-900">
+            Culinary Articles
+          </h1>
           <p className="text-gray-600">
-            Create and manage blog posts in database
+            Create and manage recipes and food articles
           </p>
         </div>
         <button
           onClick={() => setShowForm(true)}
-          className="flex items-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+          className="flex items-center bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white font-semibold py-2 px-4 rounded-xl transition-all"
         >
           <Plus className="w-4 h-4 mr-2" />
-          New Post
+          New Recipe
         </button>
       </div>
 
@@ -257,7 +273,7 @@ export function BlogManager() {
             message.includes("Error")
               ? "bg-red-50 border border-red-200 text-red-800"
               : message.includes("locally")
-              ? "bg-yellow-50 border border-yellow-200 text-yellow-800"
+              ? "bg-amber-50 border border-amber-200 text-amber-800"
               : "bg-green-50 border border-green-200 text-green-800"
           }`}
         >
@@ -265,19 +281,19 @@ export function BlogManager() {
         </div>
       )}
 
-      {/* Rest of the component remains the same as before */}
-      {/* Blog Form */}
+      {/* Recipe Form */}
       {showForm && (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-2xl shadow-sm border border-red-100 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">
-            {editingBlog ? "Edit Blog Post" : "Create New Blog Post"}
+            <Utensils className="w-5 h-5 inline mr-2 text-red-600" />
+            {editingBlog ? "Edit Recipe Article" : "Create New Recipe"}
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Title *
+                  Recipe Title *
                 </label>
                 <input
                   type="text"
@@ -286,14 +302,14 @@ export function BlogManager() {
                   onChange={(e) =>
                     setFormData({ ...formData, title: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Enter blog post title"
+                  className="w-full px-3 py-2 border border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                  placeholder="e.g., Traditional Kenyan Chapati Recipe"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Excerpt *
+                  Short Description *
                 </label>
                 <textarea
                   required
@@ -302,14 +318,14 @@ export function BlogManager() {
                   onChange={(e) =>
                     setFormData({ ...formData, excerpt: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Brief description of the blog post"
+                  className="w-full px-3 py-2 border border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                  placeholder="Brief description of the recipe or article"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Content *
+                  Full Recipe/Article Content *
                 </label>
                 <textarea
                   required
@@ -318,15 +334,15 @@ export function BlogManager() {
                   onChange={(e) =>
                     setFormData({ ...formData, content: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Full blog post content"
+                  className="w-full px-3 py-2 border border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                  placeholder="Include ingredients, instructions, cooking tips..."
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Tags
+                    Tags (comma separated)
                   </label>
                   <input
                     type="text"
@@ -334,8 +350,8 @@ export function BlogManager() {
                     onChange={(e) =>
                       setFormData({ ...formData, tags: e.target.value })
                     }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="comma, separated, tags"
+                    className="w-full px-3 py-2 border border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                    placeholder="kenyan, bread, breakfast, traditional"
                   />
                 </div>
 
@@ -348,7 +364,7 @@ export function BlogManager() {
                     onChange={(e) =>
                       setFormData({ ...formData, status: e.target.value })
                     }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500"
                   >
                     <option value="draft">Draft</option>
                     <option value="published">Published</option>
@@ -361,18 +377,18 @@ export function BlogManager() {
               <button
                 type="submit"
                 disabled={loading}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors disabled:opacity-50"
+                className="bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white font-semibold py-2 px-6 rounded-xl transition-all disabled:opacity-50"
               >
                 {loading
-                  ? "Saving..."
+                  ? "Cooking..."
                   : editingBlog
-                  ? "Update Post"
-                  : "Create Post"}
+                  ? "Update Recipe"
+                  : "Publish Recipe"}
               </button>
               <button
                 type="button"
                 onClick={resetForm}
-                className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg transition-colors"
+                className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-6 rounded-xl transition-colors"
               >
                 Cancel
               </button>
@@ -381,33 +397,34 @@ export function BlogManager() {
         </div>
       )}
 
-      {/* Search and Blogs List */}
+      {/* Search and Recipes List */}
       <div className="space-y-4">
         {/* Search */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4">
+        <div className="bg-white rounded-2xl shadow-sm border border-red-100 p-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-red-400 w-4 h-4" />
             <input
               type="text"
-              placeholder="Search blogs..."
+              placeholder="Search recipes..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full pl-10 pr-4 py-2 border border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500"
             />
           </div>
         </div>
 
-        {/* Blogs List */}
+        {/* Recipes List */}
         {filteredBlogs.map((blog) => (
           <div
             key={blog._id}
-            className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6"
+            className="bg-white rounded-2xl shadow-sm border border-red-100 p-6 hover:shadow-md transition-shadow"
           >
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-              {/* Blog Info */}
+              {/* Recipe Info */}
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
                   <h3 className="text-lg font-semibold text-gray-900">
+                    <Utensils className="w-4 h-4 inline mr-2 text-red-600" />
                     {blog.title}
                   </h3>
                   {getStatusBadge(blog.status)}
@@ -419,11 +436,11 @@ export function BlogManager() {
 
                 <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
                   <div className="flex items-center">
-                    <User className="w-4 h-4 mr-1" />
-                    {blog.author?.name || "Unknown Author"}
+                    <User className="w-4 h-4 mr-1 text-red-400" />
+                    {blog.author?.name || "Kijiji Chef"}
                   </div>
                   <div className="flex items-center">
-                    <Calendar className="w-4 h-4 mr-1" />
+                    <Calendar className="w-4 h-4 mr-1 text-red-400" />
                     {format(new Date(blog.createdAt), "MMM dd, yyyy")}
                   </div>
                   {blog.tags && blog.tags.length > 0 && (
@@ -431,7 +448,7 @@ export function BlogManager() {
                       {blog.tags.map((tag, index) => (
                         <span
                           key={index}
-                          className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs"
+                          className="bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs"
                         >
                           {tag}
                         </span>
@@ -445,7 +462,7 @@ export function BlogManager() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => handleEdit(blog)}
-                  className="flex items-center text-blue-600 hover:text-blue-700 font-medium py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors"
+                  className="flex items-center text-red-600 hover:text-red-700 font-medium py-2 px-3 rounded-xl hover:bg-red-50 transition-colors"
                 >
                   <Edit className="w-4 h-4 mr-1" />
                   Edit
@@ -453,7 +470,7 @@ export function BlogManager() {
 
                 <button
                   onClick={() => handleDelete(blog._id)}
-                  className="flex items-center text-red-600 hover:text-red-700 font-medium py-2 px-3 rounded-lg hover:bg-red-50 transition-colors"
+                  className="flex items-center text-red-600 hover:text-red-700 font-medium py-2 px-3 rounded-xl hover:bg-red-50 transition-colors"
                 >
                   <Trash2 className="w-4 h-4 mr-1" />
                   Delete
@@ -466,20 +483,20 @@ export function BlogManager() {
         {/* Empty State */}
         {filteredBlogs.length === 0 && !loading && (
           <div className="text-center py-12">
-            <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <Search className="w-8 h-8 text-gray-400" />
+            <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <Utensils className="w-8 h-8 text-red-400" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              No blog posts found
+              No recipes found
             </h3>
             <p className="text-gray-600 mb-4">
-              Get started by creating your first blog post.
+              Get started by creating your first recipe article.
             </p>
             <button
               onClick={() => setShowForm(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors"
+              className="bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white font-semibold py-2 px-6 rounded-xl transition-all"
             >
-              Create First Post
+              Create First Recipe
             </button>
           </div>
         )}
