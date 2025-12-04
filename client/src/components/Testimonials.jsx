@@ -7,7 +7,7 @@ export function Testimonials() {
     {
       name: "Fay Favourite",
       image:
-        "https://res.cloudinary.com/deci4v6zv/image/upload/v1762617272/galmain/Fay.jpg",
+        "https://res.cloudinary.com/dhr3m2yj8/image/upload/v1764414587/cld-sample.jpg",
       quote:
         "Quality begins with kijiji Cuisine. The cakes are always sweet and dope. Keep up the Good work Bigups",
       rating: 5,
@@ -15,7 +15,7 @@ export function Testimonials() {
     {
       name: "Kevin Gitahi Karanja",
       image:
-        "https://res.cloudinary.com/deci4v6zv/image/upload/v1762617272/galmain/Kevin.jpg",
+        "https://res.cloudinary.com/dhr3m2yj8/image/upload/v1764414583/samples/man-portrait.jpg",
       quote:
         "The best cuisine crew in town... I just love how you will lick your fingers after a meal cooked by them. Bravo Kijiji Cuisine",
       rating: 5,
@@ -23,14 +23,14 @@ export function Testimonials() {
     {
       name: "Clive Silva",
       image:
-        "https://res.cloudinary.com/deci4v6zv/image/upload/v1762617272/galmain/Clive.jpg",
+        "https://res.cloudinary.com/dhr3m2yj8/image/upload/v1764414582/samples/look-up.jpg",
       quote: "As a matter of fact, quality begins with Kijiji cuisine...",
       rating: 5,
     },
     {
       name: "Maurene Okemo",
       image:
-        "https://res.cloudinary.com/deci4v6zv/image/upload/v1762617272/galmain/Maurene.jpg",
+        "https://res.cloudinary.com/dhr3m2yj8/image/upload/v1764414581/samples/breakfast.jpg",
       quote:
         "Creative and organised on their work. From the look I love your work. Big up!!!",
       rating: 5,

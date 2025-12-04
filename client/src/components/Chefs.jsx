@@ -8,7 +8,7 @@ export function Chefs() {
       name: "Alex Milenye",
       position: "C.E.O",
       image:
-        "https://res.cloudinary.com/deci4v6zv/image/upload/v1762617272/galmain/IMG_7982.jpg",
+        "https://res.cloudinary.com/dhr3m2yj8/image/upload/v1764867279/IMG_7982_ozbwiz.jpg",
       description:
         "We live in a rapidly changing world, a world in which survival in business must never be taken for granted. Our vision of the future must be clear and unequivocal in order to anticipate and respond to each new challenge and opportunity.",
       quote: true,
@@ -17,7 +17,7 @@ export function Chefs() {
       name: "Dan Monene",
       position: "Master Chef",
       image:
-        "https://res.cloudinary.com/deci4v6zv/image/upload/v1762617272/galmain/chef_dan.jpg",
+        "https://res.cloudinary.com/dhr3m2yj8/image/upload/v1764867276/chef_dan_zpokco.jpg",
       description:
         "Leads the culinary team with expertise and passion. Crafts exceptional dishes by blending creativity with tradition.",
     },
@@ -25,7 +25,7 @@ export function Chefs() {
       name: "Gawi Mboya",
       position: "Pastry Chef",
       image:
-        "https://res.cloudinary.com/deci4v6zv/image/upload/v1762617272/galmain/chef_gawi_2_(1).jpg",
+        "https://res.cloudinary.com/dhr3m2yj8/image/upload/v1764867278/chef_gawi_2_1_nsq3r0.jpg",
       description:
         "Our pastry chef brings years of experience creating delightful baked goods with passion and creativity.",
     },
@@ -33,7 +33,7 @@ export function Chefs() {
       name: "Faith Njuki",
       position: "Pantry Chef",
       image:
-        "https://res.cloudinary.com/deci4v6zv/image/upload/v1762617272/galmain/IMG_7972.jpg",
+        "https://res.cloudinary.com/dhr3m2yj8/image/upload/v1764867718/IMG_7972_zncpwb.jpg",
       description:
         "Skilled in preparing and cooking savory dishes, ensuring each meal is cooked to perfection with focus on speed and precision.",
     },
@@ -41,7 +41,7 @@ export function Chefs() {
       name: "Stephen Kamau",
       position: "Salad Chef",
       image:
-        "https://res.cloudinary.com/deci4v6zv/image/upload/v1762617272/galmain/IMG_7975.jpg",
+        "https://res.cloudinary.com/dhr3m2yj8/image/upload/v1764867720/IMG_7975_mip9kj.jpg",
       description:
         "Specializes in preparing vibrant, fresh salads with a creative touch. Focuses on quality ingredients and perfect presentation.",
     },

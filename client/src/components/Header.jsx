@@ -27,7 +27,7 @@ export function Header() {
   ];
 
   const cloudinaryLogo =
-    "https://res.cloudinary.com/deci4v6zv/image/upload/v1762617272/kijiji-mascot.png";
+    "https://res.cloudinary.com/dhr3m2yj8/image/upload/v1764843081/serenity-gallery/oiyttyoxm6ol73bfn1rz.png";
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">

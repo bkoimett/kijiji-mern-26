@@ -66,7 +66,7 @@ export function BookEvent() {
             className="h-64 lg:h-auto bg-cover bg-center"
             style={{
               backgroundImage:
-                'url("https://res.cloudinary.com/deci4v6zv/image/upload/v1762617272/galmain/2en1_11.jpg")',
+                'url("https://res.cloudinary.com/dhr3m2yj8/image/upload/v1764867711/2en1_5_prhj8u.jpg")',
             }}
           />
 

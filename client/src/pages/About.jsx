@@ -25,7 +25,7 @@ export function About() {
         <div className="grid lg:grid-cols-2 gap-12 items-start">
           <div>
             <img
-              src="https://res.cloudinary.com/deci4v6zv/image/upload/v1762617272/galmain/DSC_0161.jpg"
+              src="https://res.cloudinary.com/dhr3m2yj8/image/upload/v1764866754/about-us_bx0sxc.jpg"
               alt="Kijiji Cuisine Team"
               className="rounded-2xl shadow-xl w-full h-80 object-cover mb-8"
             />
@@ -79,7 +79,7 @@ export function About() {
 
             <div className="relative rounded-2xl overflow-hidden">
               <img
-                src="https://res.cloudinary.com/deci4v6zv/image/upload/v1762617272/galmain/IMG_6670.jpg"
+                src="https://res.cloudinary.com/dhr3m2yj8/image/upload/v1764867276/_DSC4663_powkzt.jpg"
                 alt="Kijiji Cuisine Food Preparation"
                 className="w-full h-64 object-cover"
               />

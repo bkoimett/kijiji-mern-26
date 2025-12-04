@@ -14,7 +14,7 @@ export function Clients() {
 
         <div className="flex justify-center">
           <img
-            src="https://res.cloudinary.com/deci4v6zv/image/upload/v1762617272/galmain/clients.PNG"
+            src="https://res.cloudinary.com/dhr3m2yj8/image/upload/v1764842904/serenity-gallery/ucqhqfna3c7syjsp5mp6.png"
             alt="Kijiji Cuisine Clients"
             className="max-w-4xl w-full h-auto"
           />
