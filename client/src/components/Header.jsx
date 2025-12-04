@@ -23,7 +23,7 @@ export function Header() {
     { name: "Menu", href: "#menu" },
     { name: "Kijiji-Blog", href: "/blog" },
     { name: "Reviews", href: "#testimonials" },
-    { name: "Gallery", href: "#gallery" },
+    { name: "Gallery", href: "/gallery" },
   ];
 
   const cloudinaryLogo =

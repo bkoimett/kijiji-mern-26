@@ -2,7 +2,7 @@
 import React from "react";
 import SEO from "../components/seo/SEO";
 import { OrganizationSchema } from "../components/seo/StructuredData";
-import { Hero } from "../components/Hero";
+import { Hero } from "../components/Hero";;
 import { About } from "./About";
 import { WhyUs } from "../components/WhyUs";
 import { Clients } from "../components/Clients";
@@ -11,7 +11,7 @@ import { Menu } from "../components/Menu";
 import { Testimonials } from "../components/Testimonials";
 import { Chefs } from "../components/Chefs";
 import { BookEvent } from "../components/BookEvent";
-import { Gallery } from "../components/Gallery";
+
 
 export function Home() {
   const structuredData = {
@@ -51,7 +51,7 @@ export function Home() {
       <Testimonials />
       <Chefs />
       <BookEvent />
-      <Gallery />
+         
     </>
   );
 }
