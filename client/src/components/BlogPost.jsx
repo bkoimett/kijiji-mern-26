@@ -19,6 +19,7 @@ import {
 } from "../components/animations/ScrollAnimation";
 import { BlogPostSkeleton } from "./BlogPostSkeleton";
 import { API_BASE_URL } from "../config/api";
+import { ArticleSchema } from "./seo/StructuredData";
 
 export function BlogPost() {
   const { id } = useParams();
@@ -145,6 +146,7 @@ export function BlogPost() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-amber-50 py-8">
+      < ArticleSchema post={post} />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Data Source Indicator */}
         {usingLocalData && (

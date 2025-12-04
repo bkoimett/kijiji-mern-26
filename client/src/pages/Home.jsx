@@ -1,7 +1,7 @@
 // src/pages/Home.jsx
 import React from "react";
 import SEO from "../components/seo/SEO";
-import { OrganizationSchema } from "../components/seo/StructuredData";
+import AllSchemas, { OrganizationSchema } from "../components/seo/StructuredData";
 import { Hero } from "../components/Hero";;
 import { About } from "./About";
 import { WhyUs } from "../components/WhyUs";
@@ -33,13 +33,14 @@ export function Home() {
 
   return (
     <>
-      <SEO
+      {/* <SEO
         title="Kijiji Cuisine | Authentic Kenyan Catering Services"
         description="Professional catering for private and corporate events in Nairobi. 10+ years experience in authentic Kenyan cuisine. Book your event today!"
         keywords="catering services Kenya, Nairobi catering, corporate events catering, Kenyan cuisine, event catering Nairobi, private chef services"
         ogImage="https://res.cloudinary.com/deci4v6zv/image/upload/v1762617272/kijiji-mascot.png"
         structuredData={structuredData}
-      />
+      /> */}
+      <AllSchemas/>
       <OrganizationSchema />
 
       <Hero />
@@ -51,7 +52,6 @@ export function Home() {
       <Testimonials />
       <Chefs />
       <BookEvent />
-         
     </>
   );
 }
