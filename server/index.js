@@ -13,23 +13,22 @@ dotenv.config();
 
 const app = express();
 
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5173",
-      "https://kijiji-mern-26.vercel.app/",
-      "https://kijiji-mern-26-git-main-bkoimetts-projects.vercel.app/",
-      "https://kijiji-mern-26-menx1xl66-bkoimetts-projects.vercel.app/",
-      "https://*.vercel.app",
-    ],
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "x-auth-token"],
-  })
-);
+// app.use(
+//   cors({
+//     origin: [
+//       "http://localhost:5173",
+//       "https://kijiji-mern-26.vercel.app/",
+//     ],
+//     credentials: true,
+//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+//     allowedHeaders: ["Content-Type", "Authorization", "x-auth-token"],
+//   })
+// );
+
+app.use(cors());
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use("/api/auth", authRoutes);
