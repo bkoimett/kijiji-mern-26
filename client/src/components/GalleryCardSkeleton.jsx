@@ -1,26 +1,15 @@
 // src/components/GalleryCardSkeleton.jsx
 export function GalleryCardSkeleton() {
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden animate-pulse">
-      {/* Image skeleton */}
-      <div className="w-full h-64 bg-gray-300"></div>
+    <div className="relative bg-white rounded-2xl shadow-lg overflow-hidden animate-pulse">
+      <div className="aspect-w-16 aspect-h-9">
+        <div className="w-full h-80 bg-gradient-to-r from-amber-100 to-amber-200"></div>
+      </div>
 
-      {/* Content skeleton */}
-      <div className="p-4">
-        {/* Title skeleton */}
-        <div className="space-y-2 mb-3">
-          <div className="w-3/4 h-5 bg-gray-300 rounded"></div>
-          <div className="w-1/2 h-4 bg-gray-200 rounded"></div>
-        </div>
-
-        {/* Description skeleton */}
-        <div className="space-y-2 mb-4">
-          <div className="w-full h-3 bg-gray-200 rounded"></div>
-          <div className="w-4/5 h-3 bg-gray-200 rounded"></div>
-        </div>
-
-        {/* Category badge skeleton */}
-        <div className="w-20 h-6 bg-gray-300 rounded-full"></div>
+      <div className="p-6">
+        <div className="h-6 bg-gradient-to-r from-amber-100 to-amber-200 rounded-lg mb-3 w-3/4"></div>
+        <div className="h-4 bg-gradient-to-r from-amber-100 to-amber-200 rounded-lg mb-2 w-1/2"></div>
+        <div className="h-8 bg-gradient-to-r from-amber-100 to-amber-200 rounded-full w-24"></div>
       </div>
     </div>
   );

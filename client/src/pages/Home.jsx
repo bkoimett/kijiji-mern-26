@@ -1,52 +1,57 @@
-// src/pages/Home.jsx - UPDATED WITH ANIMATIONS
+// src/pages/Home.jsx
 import React from "react";
 import SEO from "../components/seo/SEO";
 import { OrganizationSchema } from "../components/seo/StructuredData";
 import { Hero } from "../components/Hero";
-import { Services } from "../components/Services";
-import { ContactForm } from "../components/ContactForm";
-import { BlogPreview } from "../components/BlogPreview";
-import { FeaturedGallery } from "../components/FeaturedGallery";
-import { ScrollAnimation } from "../components/animations/ScrollAnimation";
+import { About } from "./About";
+import { WhyUs } from "../components/WhyUs";
+import { Clients } from "../components/Clients";
+import { Stats } from "../components/Stats";
+import { Menu } from "../components/Menu";
+import { Testimonials } from "../components/Testimonials";
+import { Chefs } from "../components/Chefs";
+import { BookEvent } from "../components/BookEvent";
+import { Gallery } from "../components/Gallery";
 
 export function Home() {
   const structuredData = {
     "@context": "https://schema.org",
-    "@type": "WebPage",
-    name: "Serenity Place | Premier Rehabilitation Center in Nairobi, Kenya",
+    "@type": "Restaurant",
+    name: "Kijiji Cuisine | Authentic Kenyan Catering",
     description:
-      "Get professional addiction treatment at Serenity Place, one of the leading rehabs in Kenya. Evidence-based rehabilitation services in Nairobi.",
-    url: "https://theserenityplace.org",
+      "Kijiji Cuisine offers professional catering services for private and corporate events in Nairobi, Kenya. Authentic Kenyan cuisine with 10+ years of experience.",
+    url: "https://kijijicuisine.com",
+    servesCuisine: "Kenyan Cuisine",
+    priceRange: "$$",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Kahawa Sukari Street, Taveta Road, 1st North Avenue",
+      addressLocality: "Nairobi",
+      addressCountry: "KE",
+    },
   };
 
   return (
     <>
       <SEO
-        title="Premier Rehabilitation Center in Nairobi, Kenya"
-        description="Serenity Place offers professional addiction treatment and rehabilitation services in Nairobi, Kenya. Get evidence-based care for alcohol and drug addiction. One of the top rehabs in Kenya."
-        keywords="rehabs in Kenya, rehabs in Nairobi, addiction treatment Kenya, rehabilitation center Nairobi, drug rehab Kenya, alcohol treatment Nairobi, recovery center Kenya"
-        ogImage="https://collection.cloudinary.com/deci4v6zv/d6eeba09b5b973a82733c1b7d43654c4"
+        title="Kijiji Cuisine | Authentic Kenyan Catering Services"
+        description="Professional catering for private and corporate events in Nairobi. 10+ years experience in authentic Kenyan cuisine. Book your event today!"
+        keywords="catering services Kenya, Nairobi catering, corporate events catering, Kenyan cuisine, event catering Nairobi, private chef services"
+        ogImage="https://res.cloudinary.com/deci4v6zv/image/upload/v1762617272/kijiji-mascot.png"
         structuredData={structuredData}
       />
       <OrganizationSchema />
 
       <Hero />
-
-      <ScrollAnimation yOffset={80} duration={0.8}>
-        <Services />
-      </ScrollAnimation>
-
-      <ScrollAnimation yOffset={80} duration={0.8} delay={0.2}>
-        <BlogPreview />
-      </ScrollAnimation>
-
-      <ScrollAnimation yOffset={80} duration={0.8} delay={0.3}>
-        <FeaturedGallery />
-      </ScrollAnimation>
-
-      <ScrollAnimation yOffset={80} duration={0.8} delay={0.4}>
-        <ContactForm />
-      </ScrollAnimation>
+      <About />
+      <WhyUs />
+      <Clients />
+      <Stats />
+      <Menu />
+      <Testimonials />
+      <Chefs />
+      <BookEvent />
+      <Gallery />
     </>
   );
 }
