@@ -1,6 +1,7 @@
 {
-  "name": "serenity-place-backend",
+  "name": "kijiji-cuisine-backend",
   "version": "1.0.0",
+  "description": "Kijiji Cuisine Backend API",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -11,7 +12,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "cloudinary": "^2.8.0",

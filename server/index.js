@@ -17,8 +17,6 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://serenity-frontend-git-main-bkoimetts-projects.vercel.app",
-      "https://serenity-frontend-one.vercel.app/",
       "https://*.vercel.app",
     ],
     credentials: true,
@@ -28,6 +26,7 @@ app.use(
 );
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use("/api/auth", authRoutes);
