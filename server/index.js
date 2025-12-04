@@ -17,6 +17,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
+      "https://www.kijijicorporatecuisine.co.ke",
       "https://kijiji-mern-26.vercel.app",
     ],
     credentials: true,
