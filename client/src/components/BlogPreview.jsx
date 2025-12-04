@@ -2,15 +2,15 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { BlogCard } from "./BlogCard";
-import { ArrowRight, Database, Laptop } from "lucide-react";
-import { API_BASE_URL } from "../config/api"; 
+import { ArrowRight, ChefHat } from "lucide-react";
+import { API_BASE_URL } from "../config/api";
 
 export function BlogPreview() {
   const [featuredBlogs, setFeaturedBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [usingLocalData, setUsingLocalData] = useState(false);
 
-  const API_BASE = `${API_BASE_URL}/api`; 
+  const API_BASE = `${API_BASE_URL}/api`;
 
   // Fetch latest published blogs from backend
   useEffect(() => {
@@ -43,7 +43,7 @@ export function BlogPreview() {
       setUsingLocalData(true);
 
       // Fallback to local storage
-      const savedBlogs = localStorage.getItem("serenity-blogs");
+      const savedBlogs = localStorage.getItem("kijiji-blogs");
       if (savedBlogs) {
         const allBlogs = JSON.parse(savedBlogs);
         const publishedBlogs = allBlogs.filter(
@@ -58,12 +58,12 @@ export function BlogPreview() {
         setFeaturedBlogs([
           {
             _id: "1",
-            title: "Understanding Addiction Recovery",
+            title: "The Art of Kenyan Cuisine",
             excerpt:
-              "Learn about the journey of recovery and what to expect in the first 30 days of treatment.",
-            author: { name: "Dr. Sarah Johnson" },
+              "Discover the rich flavors and techniques behind authentic Kenyan cooking.",
+            author: { name: "Chef Dan Monene" },
             createdAt: new Date("2024-01-15"),
-            tags: ["Recovery", "Treatment"],
+            tags: ["Recipes", "Kenyan Food"],
             status: "published",
           },
         ]);
@@ -75,14 +75,14 @@ export function BlogPreview() {
 
   if (loading) {
     return (
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-gradient-to-b from-white to-amber-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="animate-pulse">
-            <div className="h-8 bg-gray-200 rounded w-1/3 mx-auto mb-4"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto mb-12"></div>
+            <div className="h-8 bg-gradient-to-r from-amber-200 to-red-200 rounded w-1/3 mx-auto mb-4"></div>
+            <div className="h-4 bg-gradient-to-r from-amber-200 to-red-200 rounded w-1/2 mx-auto mb-12"></div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="h-64 bg-gray-200 rounded"></div>
-              <div className="h-64 bg-gray-200 rounded"></div>
+              <div className="h-64 bg-gradient-to-r from-amber-200 to-red-200 rounded-2xl"></div>
+              <div className="h-64 bg-gradient-to-r from-amber-200 to-red-200 rounded-2xl"></div>
             </div>
           </div>
         </div>
@@ -91,13 +91,13 @@ export function BlogPreview() {
   }
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-gradient-to-b from-white to-amber-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Data Source Indicator */}
         {usingLocalData && (
-          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6 max-w-2xl mx-auto">
-            <div className="flex items-center gap-3 text-yellow-800">
-              <Laptop className="w-5 h-5" />
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 max-w-2xl mx-auto">
+            <div className="flex items-center gap-3 text-amber-800">
+              <ChefHat className="w-5 h-5" />
               <div className="text-sm">
                 <strong>Local Mode</strong> - Showing locally stored blog posts
               </div>
@@ -108,10 +108,10 @@ export function BlogPreview() {
         {/* Section Header */}
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Latest Insights
+            Culinary Insights
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Discover helpful articles and resources for your recovery journey.
+            Discover delicious recipes and expert tips from our culinary team.
           </p>
         </div>
 
@@ -128,7 +128,7 @@ export function BlogPreview() {
             <p className="text-gray-500 mb-4">No blog posts available yet.</p>
             <Link
               to="/admin/blog"
-              className="inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold"
+              className="inline-flex items-center text-red-600 hover:text-red-700 font-semibold"
             >
               Create your first blog post
               <ArrowRight className="w-4 h-4 ml-1" />
@@ -141,7 +141,7 @@ export function BlogPreview() {
           <div className="text-center">
             <Link
               to="/blog"
-              className="inline-flex items-center bg-gray-900 hover:bg-gray-800 text-white font-semibold py-4 px-8 rounded-lg transition-colors duration-200"
+              className="inline-flex items-center bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl"
             >
               View All Articles
               <ArrowRight className="w-5 h-5 ml-2" />

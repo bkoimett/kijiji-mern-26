@@ -6,10 +6,10 @@ export function Blog() {
   return (
     <>
       <SEO
-        title="Addiction Recovery Blog & Resources"
-        description="Read our latest articles on addiction recovery, mental health, and rehabilitation insights. Expert advice from Serenity Place Nairobi."
-        keywords="addiction recovery blog, mental health articles Kenya, rehabilitation resources, substance abuse education Nairobi"
-        ogImage="https://collection.cloudinary.com/deci4v6zv/d6eeba09b5b973a82733c1b7d43654c4"
+        title="Kijiji Cuisine Blog - Culinary Tips & Recipes"
+        description="Discover delicious recipes, catering tips, and culinary insights from Kijiji Cuisine. Expert advice on Kenyan cuisine and event planning."
+        keywords="Kenyan recipes, catering tips, food blog, culinary articles, event planning Kenya, cooking tips"
+        ogImage="https://res.cloudinary.com/deci4v6zv/image/upload/v1762617272/kijiji-mascot.png"
       />
       <BlogList />
     </>
