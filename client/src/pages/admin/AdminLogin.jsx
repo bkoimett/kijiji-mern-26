@@ -157,7 +157,7 @@ export function AdminLogin() {
             type="button"
             onClick={() => {
               setFormData({
-                email: "admin@serenityplace.org",
+                email: "admin@kijijicorporatecuisine.co.ke",
                 password: "admin123",
               });
               setTimeout(

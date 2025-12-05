@@ -14,7 +14,7 @@ dotenv.config();
  * @param {string} options.name - admin name (optional)
  */
 export const createFirstAdmin = async ({
-  email = process.env.FIRST_ADMIN_EMAIL || "admin@serenityplace.org",
+  email = process.env.FIRST_ADMIN_EMAIL || "admin@kijijicorporatecuisine.co.ke",
   password = process.env.FIRST_ADMIN_PASSWORD || "admin123",
   name = process.env.FIRST_ADMIN_NAME || "System Administrator",
 } = {}) => {
