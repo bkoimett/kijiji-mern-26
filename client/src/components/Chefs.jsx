@@ -66,7 +66,7 @@ export function Chefs() {
               <img
                 src={chefs[0].image}
                 alt={chefs[0].name}
-                className="rounded-2xl w-full h-64 object-cover"
+                className="rounded-xl w-full md:w-1/2 lg:w-[80%] h-64 bg-cover bg-center pl-4 md:pl-8 lg:pl-16"
               />
             </div>
             <div>

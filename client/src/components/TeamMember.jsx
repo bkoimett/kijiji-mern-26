@@ -8,7 +8,7 @@ export function TeamMember({ chef }) {
         <img
           src={chef.image}
           alt={chef.name}
-          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+          className="w-full md:w-1/2 lg:w-[80%] h-full relative bg-center bg-cover hover:scale-105 transition-transform duration-300"
         />
       </div>
       <div className="p-6">
