@@ -1,18 +1,15 @@
-// src/pages/admin/ContactManager.jsx
+// src/pages/admin/ContactManager.jsx - UPDATED VERSION
 import { useState, useEffect } from "react";
 import {
   Search,
   Filter,
-  Eye,
   MessageSquare,
   Calendar,
-  User,
-  Mail,
   Phone,
   CheckCircle,
   Clock,
   ChefHat,
-  Utensils,
+  Users,
 } from "lucide-react";
 import { format } from "date-fns";
 import { API_BASE_URL } from "../../config/api";
@@ -31,13 +28,22 @@ export function ContactManager() {
     { value: "new", label: "New Inquiry", color: "red" },
     { value: "contacted", label: "Contacted", color: "amber" },
     { value: "resolved", label: "Resolved", color: "green" },
+    { value: "pending", label: "Pending", color: "blue" },
+    { value: "confirmed", label: "Confirmed", color: "green" },
+    { value: "cancelled", label: "Cancelled", color: "gray" },
   ];
 
   const inquiryTypeColors = {
-    catering: "bg-red-100 text-red-800",
-    events: "bg-purple-100 text-purple-800",
-    recipes: "bg-green-100 text-green-800",
-    feedback: "bg-blue-100 text-blue-800",
+    corporate: "bg-red-100 text-red-800",
+    wedding: "bg-purple-100 text-purple-800",
+    birthday: "bg-pink-100 text-pink-800",
+    conference: "bg-blue-100 text-blue-800",
+    private: "bg-indigo-100 text-indigo-800",
+    catering: "bg-amber-100 text-amber-800",
+    general: "bg-gray-100 text-gray-800",
+    appointment: "bg-green-100 text-green-800",
+    counseling: "bg-teal-100 text-teal-800",
+    facility: "bg-cyan-100 text-cyan-800",
     other: "bg-gray-100 text-gray-800",
   };
 
@@ -148,6 +154,12 @@ export function ContactManager() {
         return <MessageSquare className="w-4 h-4" />;
       case "resolved":
         return <CheckCircle className="w-4 h-4" />;
+      case "pending":
+        return <Clock className="w-4 h-4" />;
+      case "confirmed":
+        return <CheckCircle className="w-4 h-4" />;
+      case "cancelled":
+        return <span>×</span>;
       default:
         return <Clock className="w-4 h-4" />;
     }
@@ -161,16 +173,35 @@ export function ContactManager() {
         return "bg-amber-100 text-amber-800 border-amber-200";
       case "resolved":
         return "bg-green-100 text-green-800 border-green-200";
+      case "pending":
+        return "bg-blue-100 text-blue-800 border-blue-200";
+      case "confirmed":
+        return "bg-green-100 text-green-800 border-green-200";
+      case "cancelled":
+        return "bg-gray-100 text-gray-800 border-gray-200";
       default:
         return "bg-gray-100 text-gray-800 border-gray-200";
     }
+  };
+
+  const isBookingInquiry = (contact) => {
+    const bookingTypes = [
+      "corporate",
+      "wedding",
+      "birthday",
+      "conference",
+      "private",
+      "catering",
+    ];
+    return bookingTypes.includes(contact.inquiryType);
   };
 
   const filteredContacts = contacts.filter(
     (contact) =>
       contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       contact.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      contact.message.toLowerCase().includes(searchTerm.toLowerCase())
+      contact.message.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (contact.phone && contact.phone.includes(searchTerm))
   );
 
   return (
@@ -178,9 +209,11 @@ export function ContactManager() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Event Inquiries</h1>
+          <h1 className="text-2xl font-bold text-gray-900">
+            Event & Contact Inquiries
+          </h1>
           <p className="text-gray-600">
-            Manage and respond to event booking inquiries
+            Manage booking requests and general inquiries
           </p>
         </div>
       </div>
@@ -286,7 +319,7 @@ export function ContactManager() {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-red-400 w-4 h-4" />
                 <input
                   type="text"
-                  placeholder="Search inquiries..."
+                  placeholder="Search by name, email, phone, or message..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 border border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500"
@@ -366,6 +399,13 @@ export function ContactManager() {
                           {contact.name}
                         </h3>
                         <p className="text-sm text-gray-600">{contact.email}</p>
+                        {/* Event Type Badge */}
+                        {isBookingInquiry(contact) && (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800 mt-1">
+                            <Calendar className="w-3 h-3 mr-1" />
+                            Event Booking
+                          </span>
+                        )}
                       </div>
                     </div>
                     <div
@@ -382,6 +422,34 @@ export function ContactManager() {
                     {contact.message}
                   </p>
 
+                  {/* Booking Information */}
+                  {isBookingInquiry(contact) && contact.eventDate && (
+                    <div className="mb-3 p-3 bg-amber-50 rounded-lg border border-amber-200">
+                      <div className="grid grid-cols-2 gap-2 text-sm">
+                        <div>
+                          <span className="text-gray-600">Event Date:</span>
+                          <p className="font-medium">
+                            {new Date(contact.eventDate).toLocaleDateString(
+                              "en-US",
+                              {
+                                weekday: "short",
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              }
+                            )}
+                          </p>
+                        </div>
+                        <div>
+                          <span className="text-gray-600">Guests:</span>
+                          <p className="font-medium">
+                            {contact.numberOfGuests || "Not specified"} people
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="flex items-center justify-between text-sm text-gray-500">
                     <div className="flex items-center space-x-4">
                       <div className="flex items-center">
@@ -394,7 +462,7 @@ export function ContactManager() {
                           inquiryTypeColors.other
                         }`}
                       >
-                        {contact.inquiryType || "catering"}
+                        {contact.inquiryType || "general"}
                       </span>
                     </div>
                     <div className="flex items-center">
@@ -415,7 +483,7 @@ export function ContactManager() {
                 <p className="text-gray-600">
                   {searchTerm || statusFilter !== "all"
                     ? "Try adjusting your search or filters"
-                    : "No event inquiries yet"}
+                    : "No inquiries yet"}
                 </p>
               </div>
             )}
@@ -497,6 +565,12 @@ export function ContactManager() {
                     <p className="text-sm text-gray-600">
                       {selectedContact.email}
                     </p>
+                    {isBookingInquiry(selectedContact) && (
+                      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800 mt-1">
+                        <Calendar className="w-3 h-3 mr-1" />
+                        Event Booking
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -514,15 +588,69 @@ export function ContactManager() {
                   </div>
                   <div className="flex items-center text-sm">
                     <span
-                      className={`px-2 py-1 rounded-full ${
+                      className={`px-2 py-1 rounded-full capitalize ${
                         inquiryTypeColors[selectedContact.inquiryType] ||
                         inquiryTypeColors.other
                       }`}
                     >
-                      {selectedContact.inquiryType || "catering"}
+                      {selectedContact.inquiryType || "general"}
                     </span>
                   </div>
                 </div>
+
+                {/* Booking Details Section */}
+                {isBookingInquiry(selectedContact) &&
+                  selectedContact.eventDate && (
+                    <div className="mt-4 p-4 bg-red-50 rounded-xl border border-red-200">
+                      <h5 className="font-semibold text-red-800 mb-3 flex items-center">
+                        <Calendar className="w-4 h-4 mr-2" />
+                        Booking Details
+                      </h5>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <span className="text-xs text-gray-600 block">
+                            Event Date
+                          </span>
+                          <p className="font-medium text-sm">
+                            {new Date(
+                              selectedContact.eventDate
+                            ).toLocaleDateString("en-US", {
+                              weekday: "long",
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            })}
+                          </p>
+                        </div>
+                        <div>
+                          <span className="text-xs text-gray-600 block">
+                            Event Time
+                          </span>
+                          <p className="font-medium text-sm">
+                            {selectedContact.eventTime || "Not specified"}
+                          </p>
+                        </div>
+                        <div>
+                          <span className="text-xs text-gray-600 block">
+                            Number of Guests
+                          </span>
+                          <p className="font-medium text-sm">
+                            {selectedContact.numberOfGuests || "Not specified"}{" "}
+                            people
+                          </p>
+                        </div>
+                        <div>
+                          <span className="text-xs text-gray-600 block">
+                            Event Type
+                          </span>
+                          <p className="font-medium text-sm capitalize">
+                            {selectedContact.inquiryType?.replace(/_/g, " ") ||
+                              "Event"}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
               </div>
 
               {/* Message */}
@@ -560,6 +688,63 @@ export function ContactManager() {
                     ))}
                 </div>
               </div>
+
+              {/* Booking-specific Status Actions */}
+              {isBookingInquiry(selectedContact) && (
+                <div className="mt-4 space-y-3">
+                  <h5 className="font-semibold text-gray-900">
+                    Booking Status
+                  </h5>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      onClick={() =>
+                        updateContactStatus(
+                          selectedContact._id,
+                          "confirmed",
+                          "Event confirmed with client"
+                        )
+                      }
+                      className={`flex items-center px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
+                        selectedContact.status === "confirmed"
+                          ? "bg-green-100 text-green-800 border border-green-200"
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      }`}
+                    >
+                      <CheckCircle className="w-4 h-4 mr-1" />
+                      Confirm Booking
+                    </button>
+                    <button
+                      onClick={() =>
+                        updateContactStatus(
+                          selectedContact._id,
+                          "pending",
+                          "Waiting for client confirmation"
+                        )
+                      }
+                      className={`flex items-center px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
+                        selectedContact.status === "pending"
+                          ? "bg-amber-100 text-amber-800 border border-amber-200"
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      }`}
+                    >
+                      <Clock className="w-4 h-4 mr-1" />
+                      Mark as Pending
+                    </button>
+                    <button
+                      onClick={() =>
+                        updateContactStatus(
+                          selectedContact._id,
+                          "cancelled",
+                          "Event cancelled by client/chef"
+                        )
+                      }
+                      className="flex items-center px-3 py-2 rounded-xl text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    >
+                      Cancel Booking
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* Admin Notes */}
               {selectedContact.adminNotes && (

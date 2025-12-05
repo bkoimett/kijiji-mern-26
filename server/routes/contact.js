@@ -6,7 +6,44 @@ import { auth, staffAuth } from "../middleware/auth.js"; // Make sure staffAuth 
 
 const router = express.Router();
 
-
+// Create a new contact/booking
+router.post("/", async (req, res) => {
+  try {
+    console.log("Contact form submission received:", req.body);
+    
+    const contact = new Contact(req.body);
+    await contact.save();
+    
+    console.log("Contact saved successfully:", contact);
+    
+    res.status(201).json({
+      success: true,
+      message: contact.inquiryType === "general" 
+        ? "Your message has been sent successfully!"
+        : "Your booking request has been received! We will contact you shortly.",
+      data: contact,
+    });
+  } catch (error) {
+    console.error("Contact form error:", error);
+    
+    // Handle validation errors
+    if (error.name === "ValidationError") {
+      const errors = Object.values(error.errors).map((err) => err.message);
+      return res.status(400).json({
+        success: false,
+        message: "Validation failed",
+        errors: errors,
+      });
+    }
+    
+    // Handle other errors
+    res.status(500).json({
+      success: false,
+      message: "Failed to submit form. Please try again.",
+      error: error.message,
+    });
+  }
+});
 // @route   POST /api/contact
 // @desc    Submit a contact form
 // @access  Public
