@@ -111,7 +111,7 @@ export function Footer() {
           <p className="text-gray-500 text-sm mt-2">
             Supported by{" "}
             <a href="#" className="text-red-400 hover:text-red-300">
-              OcculusTechnologies
+              bkoimett
             </a>
           </p>
         </div>
